@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\SincesController;
 use App\Http\Controllers\DepartamentsController;
+use Illuminate\Support\Facades\Http;
 
 
 /*
@@ -28,6 +29,16 @@ Route::get('/hola',function(Request $request)
 });
 
 
+
+// estas rutas se pueden acceder sin proveer de un token válido.
+Route::post('/login', 'AuthController@login');
+Route::post('/register', 'AuthController@register');
+// estas rutas requiren de un token válido para poder accederse.
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::post('/logout', 'AuthController@logout');
+});
+
+
 Route::get('/e', [EmployeesController::class, 'all']);
 Route::get('/e/get/{i}', [EmployeesController::class, 'read']);
 Route::get('/e/get/join', [EmployeesController::class, 'read_esp']);
@@ -48,3 +59,13 @@ Route::get('/d/get/join', [DepartamentsController::class, 'read_esp']);
 Route::post('/d/create', [DepartamentsController::class, 'create']);
 Route::put('/d/update/{i}', [DepartamentsController::class, 'update']);
 Route::delete('/d/delete/{i}', [DepartamentsController::class, 'delete']);
+
+Route::get('/guzzle' , function(){
+    $response = Http::get('https://jsonplaceholder.typicode.com/posts');
+    $posts= json_decode($response->body());
+    foreach($posts as $post)
+    {
+        echo $post->title;
+        die();
+    }
+});
