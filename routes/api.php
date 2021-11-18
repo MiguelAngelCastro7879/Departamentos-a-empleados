@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\SincesController;
 use App\Http\Controllers\DepartamentsController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\AuthController;
 
 
 /*
@@ -31,11 +32,11 @@ Route::get('/hola',function(Request $request)
 
 
 // estas rutas se pueden acceder sin proveer de un token válido.
-Route::post('/login', 'AuthController@login');
-Route::post('/register', 'AuthController@register');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 // estas rutas requiren de un token válido para poder accederse.
 Route::group(['middleware' => 'auth.jwt'], function () {
-    Route::post('/logout', 'AuthController@logout');
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 
